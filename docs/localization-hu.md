@@ -1,6 +1,6 @@
 # Hungarian interface and proofing
 
-> **Last reviewed:** 2026-10-11 · **Last updated:** 2026-10-18 · **Change:** minor (Hungarian offline proofing, attribution); previously minor (Hungarian interface catalog and regression checks) · **Target:** WordCraft 0.5.0
+> **Last reviewed:** 2026-10-11 · **Last updated:** 2026-10-18 · **Change:** minor (Hungarian offline proofing, attribution and pinned dictionary updates); previously minor (Hungarian interface catalog and regression checks) · **Target:** WordCraft 0.5.0
 
 Choose **File › Options › Interface language › Magyar**, or follow a Hungarian system display
 language (`hu-HU`, `hu_HU.UTF-8`). The catalog code is `hu`; `ui.language` with `{"value":"hu"}`
@@ -77,7 +77,7 @@ The original dictionary files are from LibreOffice/dictionaries, by László Né
 They are used under MPL-2.0, with the original notices, license text and pinned provenance in
 `assets/spelling/hu/`. Spellbook 0.4.2 is used under MPL-2.0; the two local safety fixes and upstream
 source are documented in `vendor/spellbook/WORDCRAFT-NOTICE.txt`. About › Third-party licenses
-shows the notices and MPL text. See [the bundled dictionary](spelling-dictionaries.md#bundled-hungarian-dictionary).
+shows the notices and MPL text. See [dictionary updates](spelling-dictionaries.md#updating-the-bundled-hungarian-dictionary).
 
 Tests use the real bundled dictionary, including `árvíztűrő`, `tükörfúrógép`, `házainkban`,
 `muszály` → `muszáj`, `hejesírás` → `helyesírás`, mixed-language byte ranges and arbitrary Unicode.
@@ -87,5 +87,5 @@ A native-speaker review of the catalog and proofing behavior is welcome.
 
 | Date | Change | Summary |
 |---|---|---|
-| 2026-10-18 | minor | Hungarian offline spelling, basic grammar, source/license notices |
+| 2026-10-18 | minor | Hungarian offline spelling, basic grammar, source/license notices and a pinned LibreOffice updater |
 | 2026-10-11 | minor | Hungarian catalog (2,419 entries: built-in style names, equation gallery, citation styles), conventions, terminology, scope and regression checks |
