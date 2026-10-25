@@ -1,0 +1,68 @@
+name: Workspace CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: workspace-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  workspace:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    env:
+      LANG: en_US.UTF-8
+      LC_ALL: C.UTF-8
+      WORDCRAFT_LANGUAGE: en
+      CARGO_TERM_COLOR: always
+      CARGO_INCREMENTAL: '0'
+      CARGO_PROFILE_DEV_DEBUG: '0'
+      CARGO_PROFILE_TEST_DEBUG: '0'
+      CARGO_TARGET_DIR: ${{ github.workspace }}/.work/target
+      TMPDIR: ${{ github.workspace }}/.work/tmp
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Prepare build dependencies and script fonts
+        run: |
+          mkdir -p .work/tmp
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            pkg-config libxkbcommon-dev libwayland-dev libx11-dev libxcursor-dev libxrandr-dev \
+            libxi-dev libgtk-3-dev libfontconfig1-dev libfreetype-dev libvulkan1 mesa-vulkan-drivers \
+            fonts-noto-core fonts-liberation
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: '1.95.0'
+          components: rustfmt, clippy
+          targets: wasm32-unknown-unknown
+
+      - uses: Swatinem/rust-cache@6323deb102c322ba6fcbdcafc7e3dddab59af2b6 # v2.9.2
+        with:
+          workspaces: . -> .work/target
+          save-if: ${{ github.ref == 'refs/heads/main' }}
+
+      - name: Check filename test prerequisites
+        run: |
+          python3 - <<'PY'
+          import os
+          path = os.fsencode(os.environ['TMPDIR']) + b'/filename-probe-\xff'
+          with open(path, 'wb') as probe:
+              probe.write(b'test')
+          os.unlink(path)
+          PY
+
+      - name: Full workspace gates without test exclusions
+        run: cargo xtask ci
+
+      - name: Vendored library formatting
+        if: ${{ hashFiles('vendor/spellbook/Cargo.toml') != '' }}
+        run: cargo fmt --manifest-path vendor/spellbook/Cargo.toml -- --check
