@@ -52,7 +52,14 @@ Additional review hardening (2026-10-25):
    uses the same parser; no partially validated dictionary is published.
    Each advance call budgets input rows, yielding between affix directives and
    word entries. A complete affix directive is atomic and may exceed the budget.
-   Test: incremental_and_synchronous_loading_agree (including malformed input).
+   The first parse error is terminal: all later advances return that error and
+   finish never publishes a partial dictionary.
+   Test: incremental_and_synchronous_loading_agree (including repeated calls
+   after malformed affix directives and dictionary entries).
+
+8. COMPLEXPREFIXES: suffix-plus-two-prefix stripping checks continuation flags
+   in the prefix index, so valid words do not depend on unrelated suffix flags.
+   Test: complex_prefix_continuations_do_not_require_suffix_continuations.
 
 Packaging and test adaptation (separate from the runtime changes):
 

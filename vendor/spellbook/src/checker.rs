@@ -1149,7 +1149,7 @@ impl<'a, S: BuildHasher> Checker<'a, S> {
         hidden_homonym: HiddenHomonym,
     ) -> Option<AffixForm<'a>> {
         // Fastlane
-        if self.aff.suffixes.all_flags.is_empty() {
+        if self.aff.prefixes.all_flags.is_empty() {
             return None;
         }
 
@@ -1175,7 +1175,7 @@ impl<'a, S: BuildHasher> Checker<'a, S> {
             // Strip the outer prefix.
             for outer_prefix in self.aff.prefixes.affixes_of(&stem) {
                 // Fastlane
-                if !self.aff.suffixes.all_flags.contains(&outer_prefix.flag) {
+                if !self.aff.prefixes.all_flags.contains(&outer_prefix.flag) {
                     continue;
                 }
 
@@ -2753,6 +2753,20 @@ mod test {
 
         assert!(!dict.check("stemsuf2"));
         assert!(!dict.check("prestemsuf2"));
+    }
+
+    #[test]
+    fn complex_prefix_continuations_do_not_require_suffix_continuations() {
+        let aff = "SET UTF-8\nCOMPLEXPREFIXES\nPFX o Y 1\nPFX o 0 out .\nPFX i Y 1\nPFX i 0 in/o .\nSFX s Y 1\nSFX s 0 z .\n";
+        let dict = Dictionary::new(aff, "1\nstem/is\n").unwrap();
+        assert!(dict.aff_data.suffixes.all_flags.is_empty());
+        assert!(dict
+            .checker()
+            .strip_suffix_then_2_prefixes("outinstemz", HiddenHomonym::default())
+            .is_some());
+        assert!(dict.check("outinstemz"));
+        assert!(!dict.check("inoutstemz"));
+        assert!(!dict.check("outstemz"));
     }
 
     #[test]
