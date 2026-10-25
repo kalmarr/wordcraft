@@ -138,7 +138,7 @@ Ranked, to beta (detail and remaining milestones in [docs/roadmap.md](docs/roadm
 
 ## Progress log
 
-- 2026-10-25: Hungarian offline spelling, language selectors and new-document language; compressed MPL dictionary, incremental loading, bounded suggestions and disjoint grammar corrections. Spellbook safety checks regressions added. Release licensing and overlapping Hungarian proposals still require maintainer review; readiness estimates unchanged.
+- 2026-10-25: Hungarian offline spelling, language selectors and new-document language; compressed MPL dictionary, incremental loading, bounded suggestions and disjoint grammar corrections. Spellbook safety checks and updater recovery regressions added. Release licensing and overlapping Hungarian proposals still require maintainer review; readiness estimates unchanged.
 
 - 2026-10-25: Text Highlight Color shows the last colour as the button's bar in the ribbon and mini toolbar; after No Color it shows the pen without a misleading yellow bar, and the button removes highlighting (#4087).
 - 2026-10-23: cu20we: DrawingML flat, square and round line caps are imported, saved, displayed and exported to PDF; absent or unknown caps default to flat. VML end caps (including shapetype inheritance) are preserved through DOCX save. Ink and metafile stroke handling remain separate. Synthetic DOCX, raster and PDF regressions cover the change; no new native Word comparison.
@@ -630,7 +630,7 @@ Footer page-table height and body wrapping are corrected. Other pagination gaps 
 
 | Date | Change | Summary |
 |---|---|---|
-| 2026-10-25 | minor | Hungarian offline proofing; bounded suggestions, incremental loading, safe vendor storage; readiness estimates unchanged |
+| 2026-10-25 | minor | Hungarian offline proofing; bounded suggestions, incremental loading, safe vendor storage and recoverable updates; readiness estimates unchanged |
 | 2026-10-25 | trivial | Progress log: Text Highlight Color buttons show the remembered colour, or no colour bar after No Color (#4087) |
 | 2026-10-23 | minor | A command that changes nothing is not an edit: no undo step, no unsaved changes, no relayout, and the redo stack survives it. |
 | 2026-10-23 | trivial | cu20we: preserve and render outline caps across DOCX/VML, screen and PDF; synthetic regressions; readiness estimates unchanged |

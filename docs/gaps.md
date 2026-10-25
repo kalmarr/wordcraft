@@ -143,7 +143,7 @@ Small follow-ups from the 2026-10-25 field, table and AutoFormat batch (#4232):
 
 | Date | Change | Summary |
 |---|---|---|
-| 2026-10-25 | minor | Hungarian offline proofing; bounded suggestions, incremental loading, safe vendor storage; readiness estimates unchanged |
+| 2026-10-25 | minor | Hungarian offline proofing; bounded suggestions, incremental loading, safe vendor storage and recoverable updates; readiness estimates unchanged |
 | 2026-10-25 | trivial | Small follow-ups from the field, table and AutoFormat batch (#4232) |
 | 2026-10-25 | trivial | Highlight decisions include fully selected paragraph marks in whole cells and ordinary ranges, including empty paragraphs; partial text columns exclude unselected marks (#4085). |
 | 2026-10-25 | trivial | Highlight toggle checks the full target beyond 10,000 runs without collecting resolved formatting; mixed and inherited tails and Undo/Redo covered (#4085). |
