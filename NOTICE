@@ -107,14 +107,22 @@ cleanup. WordCraft enables only writing; PDF import and its image decoders are n
 
 No Microsoft, Adobe, Avid or Autodesk icons, images, templates or artwork are included.
 
+- Hungarian Magyar Ispell 1.9 dictionary — copyright (c) 2025 László Németh
+  and Ferenc Godó; obtained from LibreOffice/dictionaries, hu_HU.
+  https://github.com/LibreOffice/dictionaries/tree/74b6ae2a2df22fd9d6e253f0391ac3a67cb7b3f8/hu_HU
+  Used under the MPL-2.0 option of its MPL-2.0 / LGPL-3.0-or-later license.
+  Original files and authors' notice: assets/spelling/hu/README_hu_HU.txt.
+  License: assets/spelling/hu/COPYING.MPL. Exact source revision and SHA-256
+  checksums: assets/spelling/hu/SOURCE.json. The files are redistributed unmodified.
 - Spellbook 0.4.2 — Michael Davis and contributors; MPL-2.0.
   https://github.com/helix-editor/spellbook
   Source and license: vendor/spellbook/ (LICENSE, WORDCRAFT-NOTICE.txt).
   Local runtime fixes and their regressions are listed in PATCHES.txt;
   modified files remain MPL.
 
-Source availability for Spellbook:
-The corresponding modified source is included in vendor/spellbook/. Binary
-distributions must provide this notice and access to the exact corresponding
-MPL source revision or source archive. Separate WordCraft files retain their
-MIT OR Apache-2.0 license.
+Source availability for these MPL components:
+The corresponding dictionary and modified Spellbook source are included in this
+repository at the paths above. When distributing binaries, provide recipients
+with this NOTICE and a link to the exact corresponding source revision (or a
+source archive), including your changes to MPL-covered files. The separate
+WordCraft source files retain their MIT OR Apache-2.0 license.

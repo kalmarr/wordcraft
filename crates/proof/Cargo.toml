@@ -3,7 +3,7 @@ name = "wordcraft-proof"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
-description = "WordCraft proofing per language: spelling, suggestions, grammar checks and hyphenation for English (public-domain word list) and Polish (installed Hunspell dictionary, TeX patterns)"
+description = "WordCraft proofing per language: spelling, suggestions, grammar checks and hyphenation, including offline Hungarian spelling"
 
 [lints]
 workspace = true
@@ -12,6 +12,11 @@ workspace = true
 log = { workspace = true }
 miniz_oxide = "0.8"
 unicode-normalization = "0.1"
+# MPL-2.0; reviewed local changes are enumerated in vendor/spellbook/PATCHES.txt.
+spellbook = { path = "../../vendor/spellbook", version = "=0.4.2" }
 
 [dev-dependencies]
 proptest = { workspace = true }
+
+[build-dependencies]
+miniz_oxide = "0.8"

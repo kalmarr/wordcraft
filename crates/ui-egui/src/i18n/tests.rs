@@ -774,9 +774,44 @@ fn an_italian_interface_writes_new_documents_in_italian() {
 }
 
 #[test]
+fn a_hungarian_interface_writes_new_documents_in_hungarian() {
+    let mut app = crate::WordApp::new(wordcraft_engine::Session::new(wordcraft_doc::Document::new()), Default::default());
+    use egui_kittest::kittest::Queryable;
+    app.run("file.options", serde_json::json!({"pane": "language"})).unwrap();
+    let mut harness = egui_kittest::Harness::builder().with_size(egui::vec2(1440.0, 1200.0)).build_ui_state(
+        |ui, app: &mut crate::WordApp| {
+            app.logic(ui.ctx());
+            app.ui(ui);
+        },
+        app,
+    );
+    harness.run_steps(4);
+    harness.get_by_role(egui::accesskit::Role::ComboBox).click();
+    harness.run_steps(4);
+    harness.get_by_label("Magyar").scroll_to_me();
+    harness.run_steps(8);
+    harness.get_by_label("Magyar").click();
+    harness.run_steps(4);
+    let app = harness.state_mut();
+    assert_eq!(app.ui.language, "hu", "the visible language picker selection was applied");
+    assert_eq!(app.session.editing_lang.as_deref(), Some("hu-HU"));
+    assert_eq!(app.session.doc.styles.default_chr.lang.as_deref(), Some("hu-HU"), "the untouched first document follows");
+    app.run("file.new", serde_json::json!({})).unwrap();
+    assert_eq!(app.session.doc.styles.default_chr.lang.as_deref(), Some("hu-HU"), "new documents follow the selected interface language");
+    // Typing Hungarian then shows no English misspellings; the status bar names the language.
+    app.session.run("text.insert", &serde_json::json!({"text": "Árvíztűrő tükörfúrógép"})).unwrap();
+    let issues = app.session.run("review.issues", &serde_json::json!({})).unwrap();
+    assert!(issues.as_array().unwrap().iter().all(|i| i["lang"] == "hu"), "{issues}");
+    set_current(lang("hu"));
+    assert_eq!(crate::ribbon::caret_language(app), tr(lang("hu"), "Hungarian"));
+    set_current(Lang::EN);
+    assert_eq!(crate::ribbon::caret_language(app), "Hungarian");
+}
+
+#[test]
 fn the_editing_languages_are_the_ones_wordcraft_can_proof() {
     let with: Vec<(&str, &str)> = LANGUAGES.iter().filter_map(|l| l.editing_lang.map(|e| (l.code, e))).collect();
-    assert_eq!(with, [("pt-br", "pt-BR"), ("pl", "pl-PL"), ("cs", "cs-CZ"), ("tr", "tr-TR"), ("it", "it-IT")]);
+    assert_eq!(with, [("pt-br", "pt-BR"), ("pl", "pl-PL"), ("cs", "cs-CZ"), ("tr", "tr-TR"), ("it", "it-IT"), ("hu", "hu-HU")]);
 }
 
 #[test]
