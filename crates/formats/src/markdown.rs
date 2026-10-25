@@ -136,6 +136,8 @@ fn take_definitions(lines: &mut Vec<String>) -> Refs {
         if in_comment {
             let tail = block_comment_tail(line);
             in_comment = tail.is_none();
+            // parse_blocks reprocesses visible tails as source, including opening fences.
+            open = tail.filter(|s| indent(s) < 4).and_then(|s| fence(s.trim_start_matches([' ', '\t'])));
             starts_block = tail.is_some_and(|s| is_blank(s) || atx_heading(s.trim_start()).is_some() || thematic_break(s.trim_start()));
             return true;
         }
@@ -160,6 +162,8 @@ fn take_definitions(lines: &mut Vec<String>) -> Refs {
         if indent(line) < 4 && t.starts_with("<!--") {
             let tail = block_comment_tail(line);
             in_comment = tail.is_none();
+            // parse_blocks reprocesses visible tails as source, including opening fences.
+            open = tail.filter(|s| indent(s) < 4).and_then(|s| fence(s.trim_start_matches([' ', '\t'])));
             starts_block = tail.is_some_and(|s| is_blank(s) || atx_heading(s.trim_start()).is_some() || thematic_break(s.trim_start()));
             return true;
         }
@@ -2224,6 +2228,22 @@ mod tests {
             assert!(flow.blocks.iter().any(
                 |b| matches!(b, FBlock::Para(p) if p.inlines.iter().any(|i| matches!(i, Inline::Text(_, f) if f.link.as_deref() == Some("/right"))))
             ));
+        }
+    }
+
+    #[test]
+    fn fences_after_comment_tails_keep_definitions_as_code() {
+        for (comment, marker) in [("<!-- -->", "```"), ("<!--\n-->", "~~~"), ("<!-- first --><!-- second -->  ", "```")] {
+            let flow = parse(&format!("{comment}{marker}\n\n[x]: /wrong\n{marker}\n[x]: /right\n\n[x]"));
+            assert!(flow.blocks.iter().any(|b| matches!(b, FBlock::Para(p) if p.kind == Kind::Code && p.text() == "[x]: /wrong")));
+            let links: Vec<_> = flow
+                .blocks
+                .iter()
+                .filter_map(|b| if let FBlock::Para(p) = b { Some(p) } else { None })
+                .flat_map(|p| &p.inlines)
+                .filter_map(|i| if let Inline::Text(_, f) = i { f.link.as_deref() } else { None })
+                .collect();
+            assert_eq!(links, ["/right"]);
         }
     }
 
