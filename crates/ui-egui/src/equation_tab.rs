@@ -310,6 +310,7 @@ fn symbol_button(ui: &mut Ui, app: &mut WordApp, c: char, t: &Tokens) -> bool {
     resp.on_hover_text(symbol_tooltip(c, &display)).clicked()
 }
 
+/// Append the symbol name or codepoint only when the display is the glyph itself.
 fn symbol_tooltip(c: char, display: &str) -> String {
     if display != c.to_string() {
         // Missing glyphs already display their linear name or codepoint.
@@ -439,6 +440,7 @@ pub fn show(app: &mut WordApp, ui: &mut Ui) {
 
 #[cfg(test)]
 mod placeholder_tests {
+    /// Named and unnamed missing glyphs appear once; covered glyphs retain their suffix.
     #[test]
     fn symbol_tooltips_do_not_repeat_missing_glyph_fallbacks() {
         for c in ['α', '\u{0378}'] {
