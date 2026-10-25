@@ -104,7 +104,7 @@ A native-speaker review of the catalog and proofing behavior is welcome.
 
 | Date | Change | Summary |
 |---|---|---|
-| 2026-10-25 | minor | Current-main integration, safe incremental loading, bounded suggestions |
+| 2026-10-25 | minor | Current-main integration, safe incremental loading, bounded suggestions and failure-preserving recovery |
 | 2026-10-23 | trivial | The catalog moved to storytold/craft-i18n (`locales/hu/wordcraft.tsv`) |
 | 2026-10-23 | trivial | Lookup, context, template, style-name and command-search tests use inline fixture catalogs or the pseudo-language; tests that asserted one language's catalog wording removed |
 | 2026-10-23 | trivial | Interface-language tests: a missing translation falls back to English and never fails a test; `cargo xtask i18n-report` (part of `cargo xtask ci`) prints the strings each language lacks; single-language coverage tests removed |

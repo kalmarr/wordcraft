@@ -140,7 +140,7 @@ Ranked, to beta (detail and remaining milestones in [docs/roadmap.md](docs/roadm
 
 ## Progress log
 
-- 2026-10-25: Hungarian offline spelling, language selectors and new-document language; compressed MPL dictionary, incremental loading, bounded suggestions and disjoint grammar corrections. Spellbook safety checks regressions added. Release licensing and overlapping Hungarian proposals still require maintainer review; readiness estimates unchanged.
+- 2026-10-25: Hungarian offline spelling, language selectors and new-document language; compressed MPL dictionary, incremental loading, bounded suggestions and disjoint grammar corrections. Spellbook safety checks and updater recovery regressions added. Release licensing and overlapping Hungarian proposals still require maintainer review; readiness estimates unchanged.
 
 
 - 2026-10-25: Interface catalogs are still the shared storytold/craft-i18n ones embedded from `craft-i18n.rev` (`9205108c…`): 27 WordCraft languages with English fallback for missing strings, and the equation “Delete Around Caret in Equation” translation preserved. Native-speaker review remains human.
@@ -640,7 +640,7 @@ Footer page-table height and body wrapping are corrected. Other pagination gaps 
 
 | Date | Change | Summary |
 |---|---|---|
-| 2026-10-25 | minor | Hungarian offline proofing; bounded suggestions, incremental loading, safe vendor storage; readiness estimates unchanged |
+| 2026-10-25 | minor | Hungarian offline proofing; bounded suggestions, incremental loading, safe vendor storage and recoverable updates; readiness estimates unchanged |
 
 | 2026-10-25 | trivial | Progress log: egui 0.37 migration records the `craft-i18n.rev` catalog pin (9205108…; 27 languages) and the input-method handling; managed CI passed; native acceptance and native-speaker review remain open |
 | 2026-10-17 | trivial | Progress log: Standard-encrypted (AES) Word files open (gap 9) |
