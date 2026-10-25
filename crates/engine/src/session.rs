@@ -1734,6 +1734,7 @@ impl Session {
         self.ime_edit_outcome
     }
 
+    /// Combine nested effects without certifying the transaction as one directly classified edit.
     fn merge_ime_outcomes(first: ImeEditOutcome, second: ImeEditOutcome) -> ImeEditOutcome {
         ImeEditOutcome {
             // Effects from multiple dispatches cannot certify one direct IME edit.
@@ -1855,6 +1856,7 @@ impl Session {
         result
     }
 
+    /// Execute one dispatch with rollback and fold its nested effects into the published outcome.
     fn run_command(&mut self, id: &str, params: &Value) -> Result<Value, CmdError> {
         // Every dispatch starts from an unclassified outcome. Early returns (unknown, disabled,
         // protected) leave it at the default.
@@ -2316,6 +2318,7 @@ mod ime_revision_tests {
         assert!(s.take_pending_ime_application_change());
     }
 
+    /// A macro retains earlier transformed edits; subsequent top-level dispatches start fresh.
     #[test]
     fn nested_macro_keeps_earlier_content_and_transformation_outcomes() {
         let mut s = Session::new(Document::new());
