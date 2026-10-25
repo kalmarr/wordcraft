@@ -160,6 +160,7 @@ pub(crate) struct IncrementalParser<'aff, 'dic, S: BuildHasher> {
     words: WordList<S>,
     aff_finished: bool,
     finished: bool,
+    failed: Option<ParseDictionaryError>,
 }
 
 impl<'aff, 'dic, S: BuildHasher + Clone> IncrementalParser<'aff, 'dic, S> {
@@ -180,11 +181,23 @@ impl<'aff, 'dic, S: BuildHasher + Clone> IncrementalParser<'aff, 'dic, S> {
             words: WordList::with_capacity_and_hasher(row_count.min(MAX_HINT), build_hasher),
             aff_finished: false,
             finished: false,
+            failed: None,
         })
     }
 
     /// Process no more than `budget` directives/entries. One affix directive can own several rows.
     pub(crate) fn advance(&mut self, budget: usize) -> Result<bool> {
+        if let Some(error) = &self.failed {
+            return Err(error.clone());
+        }
+        let result = self.advance_inner(budget);
+        if let Err(error) = &result {
+            self.failed = Some(error.clone());
+        }
+        result
+    }
+
+    fn advance_inner(&mut self, budget: usize) -> Result<bool> {
         let mut remaining = budget;
         while remaining > 0 {
             remaining -= 1;
@@ -254,7 +267,7 @@ impl<'aff, 'dic, S: BuildHasher + Clone> IncrementalParser<'aff, 'dic, S> {
     }
 
     pub(crate) fn finish(self) -> Option<(WordList<S>, AffData)> {
-        if !self.finished {
+        if !self.finished || self.failed.is_some() {
             return None;
         }
         Some(collect_aff_data(self.cx, self.words))
