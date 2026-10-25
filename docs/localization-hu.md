@@ -1,8 +1,8 @@
 # Hungarian interface and proofing
 
-> **Last reviewed:** 2026-10-11 · **Last updated:** 2026-10-25 · **Change:** trivial (Printing CI checks out the craft-i18n.rev catalog pin on Linux, Windows and macOS. The Hungarian language-picker control also verifies English-only builds with no catalogs.); previously minor (Hungarian offline proofing; previously trivial: the catalog moved to storytold/craft-i18n, `locales/hu/wordcraft.tsv`; previously trivial: interface-language tests: a missing translation never fails a test, `cargo xtask i18n-report` in `cargo xtask ci` prints the strings each language lacks, and lookup and template tests use inline fixture catalogs or the pseudo-language; previously trivial: the interface audit lists missing Hungarian entries instead of failing; previously minor: Hungarian interface catalog and regression checks) · **Target:** WordCraft 0.5.0
+> **Last reviewed:** 2026-10-11 · **Last updated:** 2026-10-25 · **Change:** trivial (Printing CI checks out the craft-i18n.rev catalog pin and the release-pinned craft-fonts input on Linux, Windows and macOS, so every native language name has glyph coverage. The Hungarian language-picker control also verifies English-only builds with no catalogs.); previously minor (Hungarian offline proofing; previously trivial: the catalog moved to storytold/craft-i18n, `locales/hu/wordcraft.tsv`; previously trivial: interface-language tests: a missing translation never fails a test, `cargo xtask i18n-report` in `cargo xtask ci` prints the strings each language lacks, and lookup and template tests use inline fixture catalogs or the pseudo-language; previously trivial: the interface audit lists missing Hungarian entries instead of failing; previously minor: Hungarian interface catalog and regression checks) · **Target:** WordCraft 0.5.0
 
-Printing CI checks out the craft-i18n.rev catalog pin on Linux, Windows and macOS. The Hungarian language-picker control also verifies English-only builds with no catalogs.
+Printing CI checks out the craft-i18n.rev catalog pin and the release-pinned craft-fonts input on Linux, Windows and macOS, so every native language name has glyph coverage. The Hungarian language-picker control also verifies English-only builds with no catalogs.
 
 Choose **File › Options › Interface language › Magyar**, or follow a Hungarian system display
 language (`hu-HU`, `hu_HU.UTF-8`). The catalog code is `hu`; `ui.language` with `{"value":"hu"}`
@@ -100,7 +100,7 @@ A native-speaker review of the catalog and proofing behavior is welcome.
 
 ## Revision history
 
-> 2026-10-25 · Printing CI checks out the craft-i18n.rev catalog pin on Linux, Windows and macOS. The Hungarian language-picker control also verifies English-only builds with no catalogs.
+> 2026-10-25 · Printing CI checks out the craft-i18n.rev catalog pin and the release-pinned craft-fonts input on Linux, Windows and macOS, so every native language name has glyph coverage. The Hungarian language-picker control also verifies English-only builds with no catalogs.
 
 | Date | Change | Summary |
 |---|---|---|
