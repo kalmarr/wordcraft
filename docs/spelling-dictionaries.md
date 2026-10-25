@@ -1,8 +1,8 @@
 # Installing spelling dictionaries
 
-> **Last reviewed:** 2026-10-16 · **Last updated:** 2026-10-18 · **Change:** trivial (ISO 8859-1 dictionaries are read, #2824; previously major: first version)
+> **Last reviewed:** 2026-10-16 · **Last updated:** 2026-10-19 · **Change:** minor (Hungarian offline proofing, attribution); previously trivial (ISO 8859-1 dictionaries are read, #2824; previously major: first version)
 
-English spelling works out of the box. Polish, Russian, Portuguese, Czech, Italian, Croatian and
+English and Hungarian spelling work out of the box. Polish, Russian, Portuguese, Czech, Italian, Croatian and
 Turkish spelling use a standard **Hunspell** dictionary (an `.aff` and a `.dic` file) that
 WordCraft reads at runtime. These dictionaries are not bundled: they are large, and several are
 GPL or LGPL licensed. Without one, the language isn't checked. The status bar then shows the
@@ -14,6 +14,21 @@ size limit, a parse error), the language isn't checked either, and the status ba
 **File › Options › Proofing** lists the same reason next to the file.
 
 Install a dictionary once, restart WordCraft, and the language is checked as you type.
+
+## Bundled Hungarian dictionary
+
+Hungarian uses the unmodified `hu_HU.aff` and `hu_HU.dic` from
+[LibreOffice/dictionaries](https://github.com/LibreOffice/dictionaries/tree/master/hu_HU),
+Magyar Ispell 1.9 by László Németh and Ferenc Godó, under the **MPL-2.0 option**.
+The original authors' README, MPL license and exact upstream commit/checksums accompany the
+files in `assets/spelling/hu/`. It works offline on desktop and WASM; the dictionaries-folder
+setting does not override the bundled Hungarian dictionary.
+
+The runtime adapter converts legacy byte flags to distinct Unicode identifiers in memory;
+UTF-8 words and the original source files stay intact. Spellbook's local arithmetic, case-index, affix-condition, compound and
+suggestion fixes remain MPL-2.0; see `vendor/spellbook/WORDCRAFT-NOTICE.txt`.
+When redistributing binaries, provide the corresponding MPL source (including modifications)
+and the notices, and tell recipients where to obtain it, as described in `NOTICE`.
 
 ## Which files each language needs
 
@@ -121,12 +136,14 @@ from the LibreOffice repository (for example `it_IT/it_IT.aff`).
 - The log file (`%APPDATA%\WordCraft\logs\wordcraft.log` on Windows) says
   `Portuguese spelling: no Hunspell pt_BR dictionary installed` when none was found.
 
-Never commit dictionary files to this repository: they stay on the user's system.
+Do not commit system-installed dictionaries: they stay on the user's system. The bundled Hungarian dictionary is the exception; commit reviewed updates together with their source manifest and license notices.
 
 ## Revision history
 
 | Date | Change | Summary |
 |---|---|---|
+| 2026-10-19 | minor | PR #2980 review: affix/compound/suggestion regressions, recoverable dictionary updates and consistent Hungarian status |
+| 2026-10-18 | minor | Hungarian offline spelling, basic grammar, source/license notices |
 | 2026-10-18 | trivial | ISO 8859-1 (`SET ISO8859-1`) dictionaries are read, so the original VERO `pt_BR` works without converting it to UTF-8 (#2824) |
 | 2026-10-18 | minor | An installed dictionary that can't be read shows **(dictionary unreadable)** in the status bar, with the file and reason in its tooltip and in File › Options › Proofing (#2830) |
 | 2026-10-16 | major | First version: the file names per language, the search order and folders on Windows, macOS and Linux, installing `pt_BR` on each, and how to check it works |
