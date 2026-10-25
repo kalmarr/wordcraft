@@ -310,6 +310,7 @@ mod tests {
         assert_eq!((g.position, g.width, g.height, g.monitor), (None, 1000.0, 700.0, Some([1920.0, 1080.0])));
     }
 
+    /// Invalid inner dimensions use fresh screen geometry; valid inner dimensions take precedence.
     #[test]
     fn invalid_inner_size_falls_back_to_fresh_screen_geometry() {
         let screen = egui::Rect::from_min_size(egui::Pos2::ZERO, egui::vec2(1000.0, 700.0));
