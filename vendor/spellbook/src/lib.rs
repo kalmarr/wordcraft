@@ -588,9 +588,18 @@ mod test {
             .unwrap()
             .finish()
             .is_none());
-        let mut broken = DictionaryBuilder::new("SET UTF-8\nFLAG invalid\n", "0").unwrap();
-        assert!(broken.advance(1).is_ok());
-        assert!(broken.advance(1).is_err());
+        for (aff, dic) in [
+            ("SET UTF-8\nFLAG invalid\n", "0"),
+            ("SET UTF-8\nFLAG num\n", "3\nstem/invalid\nvalid/1\nplain\n"),
+        ] {
+            let mut broken = DictionaryBuilder::new(aff, dic).unwrap();
+            let first = (0..10).find_map(|_| broken.advance(1).err()).unwrap();
+            for budget in [0, 1, 7, 1024] {
+                assert_eq!(broken.advance(budget), Err(first.clone()));
+            }
+            assert!(broken.finish().is_none());
+            assert_eq!(Dictionary::new(aff, dic).err(), Some(first));
+        }
     }
 
     #[test]
