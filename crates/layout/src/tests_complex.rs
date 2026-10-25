@@ -66,6 +66,16 @@ fn myanmar_without_spaces_wraps_between_syllables() {
 
 /// A face with Myanmar letters (an installed system font), or `None` to skip.
 fn myanmar_face() -> Option<wordcraft_fonts::FaceRef> {
+    // CI supplies a real Myanmar shaping font. A generic Unicode fallback may have Latin
+    // OpenType tables but no Myanmar substitutions; it is not a valid shaping fixture.
+    if let Some(path) = std::env::var_os("WORDCRAFT_TEST_MYANMAR_FONT") {
+        let db = wordcraft_fonts::FontDb::with_font_dirs(Vec::new());
+        assert!(db.add_font(std::fs::read(path).expect("read the configured Myanmar test font")) > 0);
+        let face = db.face("Noto Sans Myanmar", "Regular");
+        assert_eq!(face.family, "Noto Sans Myanmar", "configured fixture must contain the Myanmar font");
+        assert!(face.has_layout_tables() && face.covers('\u{1000}'));
+        return Some(wordcraft_fonts::FaceRef::of(&face));
+    }
     wordcraft_fonts::FontDb::global().fallback_for('\u{1000}', 0).map(|f| wordcraft_fonts::FaceRef::of(&f)).filter(|f| f.has_layout_tables())
 }
 
