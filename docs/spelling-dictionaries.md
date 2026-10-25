@@ -15,7 +15,7 @@ size limit, a parse error), the language isn't checked either, and the status ba
 
 Install a dictionary once, restart WordCraft, and the language is checked as you type.
 
-## Bundled Hungarian dictionary
+## Updating the bundled Hungarian dictionary
 
 Hungarian uses the unmodified `hu_HU.aff` and `hu_HU.dic` from
 [LibreOffice/dictionaries](https://github.com/LibreOffice/dictionaries/tree/74b6ae2a2df22fd9d6e253f0391ac3a67cb7b3f8/hu_HU),
@@ -23,6 +23,34 @@ Magyar Ispell 1.9 by László Németh and Ferenc Godó, under the **MPL-2.0 opti
 The original authors' README, MPL license and exact upstream commit/checksums accompany the
 files in `assets/spelling/hu/`. It works offline on desktop and WASM; the dictionaries-folder
 setting does not override the bundled Hungarian dictionary.
+
+A maintainer can review a new LibreOffice commit and run:
+
+```sh
+cargo xtask update-hungarian <full-40-digit-LibreOffice-dictionaries-commit>
+cargo test -p wordcraft-proof
+cargo test -p wordcraft-engine hungarian_proofing
+```
+
+The updater fetches only from LibreOffice's repository over HTTPS, requires an immutable commit,
+checks the MPL option in the upstream license statement, parses the candidate files and tests
+representative correct/incorrect words **before** replacing bundled files. A changed license
+statement or failed language check stops the import. It preserves all original bytes and notices,
+and records the revision and SHA-256 hashes in `SOURCE.json`; review the diff before committing.
+Updates hold an OS file lock and stage files in a private `.work/` directory. Publication
+renames whole directories and verifies the installed hashes. The previous complete directory
+remains in `.work/hungarian-backup` until verification succeeds; a subsequent updater invocation
+restores it if an earlier process stopped mid-publication. During the brief rename gap a build
+can fail on missing assets; individual files are never copied into the live directory.
+Do not build or edit dictionary assets while running the updater. If it was interrupted, run
+the already-built xtask executable with the same arguments to recover before building
+(`target/debug/xtask update-hungarian <commit>`, or under your `CARGO_TARGET_DIR`). If
+`assets/spelling/hu` is missing and the executable is unavailable, move the complete
+`.work/hungarian-backup` directory back to `assets/spelling/hu` before invoking Cargo.
+Do not delete that backup or restore individual files from it. If restoring the backup fails,
+the updater restores the displaced current dictionary. If that rollback also fails, it retains
+the complete displaced copy and reports its quarantine path; neither copy is deleted.
+There are no automatic background downloads or uploads of document text.
 
 The build compresses the source files for embedding. Interactive loading yields between batches
 and reports loading/failure in the status bar; suggestion work is limited to 256 candidates
@@ -158,11 +186,11 @@ Do not commit system-installed dictionaries: they stay on the user's system. The
 
 | Date | Change | Summary |
 |---|---|---|
-| 2026-10-25 | minor | Current-main integration, safe incremental loading, bounded suggestions |
+| 2026-10-25 | minor | Current-main integration, safe incremental loading, bounded suggestions and failure-preserving recovery |
 | 2026-10-22 | minor | Spanish (#3360, #3553): the file names for Spain, Mexico, Latin America and Uruguay and their fallbacks |
 | 2026-10-22 | trivial | Italian, Croatian, Turkish, Russian, Czech and Indonesian without a dictionary now show **(no dictionary)** (or **(dictionary unreadable)**) too, as this page already said; before, only Polish and Portuguese did. Indonesian is listed with its file names (#3150) |
 | 2026-10-19 | minor | PR #2980 review: affix/compound/suggestion regressions, recoverable dictionary updates and consistent Hungarian status |
-| 2026-10-18 | minor | Hungarian offline spelling, basic grammar, source/license notices |
+| 2026-10-18 | minor | Hungarian offline spelling, basic grammar, source/license notices and a pinned LibreOffice updater |
 | 2026-10-18 | trivial | ISO 8859-1 (`SET ISO8859-1`) dictionaries are read, so the original VERO `pt_BR` works without converting it to UTF-8 (#2824) |
 | 2026-10-18 | minor | An installed dictionary that can't be read shows **(dictionary unreadable)** in the status bar, with the file and reason in its tooltip and in File › Options › Proofing (#2830) |
 | 2026-10-16 | major | First version: the file names per language, the search order and folders on Windows, macOS and Linux, installing `pt_BR` on each, and how to check it works |
