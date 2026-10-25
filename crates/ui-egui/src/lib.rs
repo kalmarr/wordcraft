@@ -626,6 +626,7 @@ pub struct WordApp {
     /// The interface language and the editing language the session last got for it
     /// ([`i18n::Lang::editing_lang`], or for English the region's English).
     applied_editing: Option<(i18n::Lang, Option<String>)>,
+    proof_dictionary_generation: u64,
     /// What the system last said about its animation effects ([`Services::animations_enabled`]).
     system_animations: Option<bool>,
     /// Whether egui's own animations were last switched on or off ([`theme::apply_animations`]).
@@ -763,6 +764,7 @@ impl WordApp {
             desktop_theme: desktop_theme::DesktopTheme::default(),
             desktop_dark: None,
             applied_editing: None,
+            proof_dictionary_generation: wordcraft_engine::proof::dictionary_generation(),
             system_animations: None,
             applied_animations: None,
             frame_ms: 0.0,
@@ -2244,6 +2246,12 @@ impl WordApp {
 
     /// Per-frame logic before layout: control requests, screenshots, shortcuts, file drops.
     pub fn logic(&mut self, ctx: &egui::Context) {
+        wordcraft_engine::proof::hu::poll_interactive_loading();
+        let generation = wordcraft_engine::proof::dictionary_generation();
+        if generation != self.proof_dictionary_generation {
+            self.session.relayout();
+            self.proof_dictionary_generation = generation;
+        }
         let lang = i18n::Lang::from_pref(&self.ui.language);
         i18n::set_current(lang);
         // New documents are written in the interface's language when WordCraft can proof it
@@ -2542,6 +2550,13 @@ impl WordApp {
 
     /// Lay out the window.
     pub fn ui(&mut self, ui: &mut egui::Ui) {
+        self.ui_contents(ui);
+        if wordcraft_engine::proof::hu::is_loading() {
+            ui.ctx().request_repaint_after(std::time::Duration::from_millis(16));
+        }
+    }
+
+    fn ui_contents(&mut self, ui: &mut egui::Ui) {
         let t0 = now_ms();
         let ctx = ui.ctx().clone();
         i18n::set_current(i18n::Lang::from_pref(&self.ui.language));

@@ -39,8 +39,35 @@ jobs:
     env:
       CARGO_TERM_COLOR: always
       CARGO_INCREMENTAL: '0'
+      CRAFT_I18N_DIR: ${{ github.workspace }}/.work/craft-i18n
+      CRAFT_I18N_REQUIRED: '1'
+      CRAFT_FONTS_DIR: ${{ github.workspace }}/.work/craft-fonts
+      CRAFT_FONTS_REQUIRED: '1'
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      # The language picker renders every catalog's native name, including CJK scripts.
+      # Keep this input aligned with ci.yml and release.yml.
+      - name: Check out the pinned interface fonts
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: storytold/craft-fonts
+          ref: b076417b5880bd4154bd22f00695b1d28c6bea83
+          path: .work/craft-fonts
+          persist-credentials: false
+
+      - name: Read the interface catalog revision
+        id: i18n
+        shell: bash
+        run: echo "rev=$(tr -d '\r\n' < craft-i18n.rev)" >> "$GITHUB_OUTPUT"
+
+      - name: Check out the pinned interface catalogs
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: storytold/craft-i18n
+          ref: ${{ steps.i18n.outputs.rev }}
+          path: .work/craft-i18n
+          persist-credentials: false
 
       - name: Install Linux build and software-rendering dependencies
         if: runner.os == 'Linux'
