@@ -1856,16 +1856,20 @@ mod tests {
         assert!(!rows.accesskit_node().is_disabled());
         rows.click();
         h.run_steps(2);
-        h.get_by_role_and_label(Role::SpinButton, "Number of rows:").type_text("2");
+        h.get_by_role_and_label(Role::SpinButton, "Number of rows:").type_text("1");
         h.key_press(egui::Key::Enter);
         h.run_steps(2);
         assert_eq!(h.state().session.doc, before);
         h.get_by_role_and_label(Role::Button, "OK").click();
         h.run_steps(2);
         assert!(h.state().dialog.is_none());
-        assert_eq!(table_shape(h.state()), [4, 4], "merge restores four columns; the typed row count is two");
+        assert_eq!(table_shape(h.state()), [4, 4], "four columns span the two original physical rows");
         let t = h.state().session.doc.body.iter().find_map(|b| b.as_table()).unwrap();
-        assert!(t.rows.iter().flat_map(|r| &r.cells).all(|c| c.props.vmerge == wordcraft_doc::props::VMerge::None));
+        assert!(t.rows[0].cells.iter().all(|c| c.props.vmerge == wordcraft_doc::props::VMerge::Restart));
+        assert!(
+            t.rows[1].cells.iter().all(|c| c.props.vmerge == wordcraft_doc::props::VMerge::Continue),
+            "typing one changes the default two logical rows"
+        );
         assert_ne!(h.state().session.doc, before);
         h.state_mut().run("edit.undo", json!({})).unwrap();
         assert_eq!(h.state().session.doc, before);
